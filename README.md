@@ -4,17 +4,17 @@ An e-commerce app where you can find the products you want.
 
 using Firebase as a backend service.
 
-1- register and login
-2- add / remove products from favorites
-3- add / remove products from cart
-4- update profile and address details manually or from google maps api
-5- download products images to your device
-6- search for the product you need
-7- browse products by different categories
-8- make orders and pay with the method you want: Cash on delivery 
-   or by credit cards (using stripe payment gateway)
-9- track your orders and see their details
-10- change theme (light - dark)
+1- register and login  
+2- add / remove products from favorites  
+3- add / remove products from cart  
+4- update profile and address details manually or from google maps api  
+5- download products images to your device  
+6- search for the product you need  
+7- browse products by different categories  
+8- make orders and pay with the method you want: Cash on delivery  
+   or by credit cards (using stripe payment gateway)  
+9- track your orders and see their details  
+10- change theme (light - dark)  
 
 used packages:  
 &emsp;- bloc state management  
