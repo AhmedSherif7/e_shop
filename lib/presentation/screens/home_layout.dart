@@ -31,25 +31,44 @@ class HomeLayout extends StatelessWidget {
       ],
       child: BlocListener<UserBloc, UserState>(
         listenWhen: (previous, current) {
-          return previous.userProductStatus != current.userProductStatus ||
-              (previous.user.cartProducts.length !=
+          return (previous.user.cartProducts.length !=
                       current.user.cartProducts.length &&
                   current.notifyCartChange) ||
               previous.user.favorites.length != current.user.favorites.length;
         },
         listener: (context, state) {
-          switch (state.userProductStatus) {
-            case UserProductStatus.addedToFavoritesSuccess:
-            case UserProductStatus.addedToCartSuccess:
-            case UserProductStatus.removedFromFavoritesSuccess:
-            case UserProductStatus.removedFromCartSuccess:
-            case UserProductStatus.addedToFavoritesError:
-            case UserProductStatus.removedFromFavoritesError:
-            case UserProductStatus.addedToCartError:
-            case UserProductStatus.removedFromCartError:
+          switch (state.favoriteStatus) {
+            case FavoriteStatus.addedToFavoritesSuccess:
+            case FavoriteStatus.removedFromFavoritesSuccess:
               showToast(
                 message: state.message!,
                 state: ToastStates.success,
+              );
+              break;
+            case FavoriteStatus.addedToFavoritesError:
+            case FavoriteStatus.removedFromFavoritesError:
+              showToast(
+                message: state.message!,
+                state: ToastStates.error,
+              );
+              break;
+            case null:
+              break;
+          }
+
+          switch (state.cartStatus) {
+            case CartStatus.addedToCartSuccess:
+            case CartStatus.removedFromCartSuccess:
+              showToast(
+                message: state.message!,
+                state: ToastStates.success,
+              );
+              break;
+            case CartStatus.addedToCartError:
+            case CartStatus.removedFromCartError:
+              showToast(
+                message: state.message!,
+                state: ToastStates.error,
               );
               break;
             case null:

@@ -1,10 +1,13 @@
 part of 'user_bloc.dart';
 
-enum UserProductStatus {
+enum FavoriteStatus {
   addedToFavoritesSuccess,
   addedToFavoritesError,
   removedFromFavoritesSuccess,
   removedFromFavoritesError,
+}
+
+enum CartStatus {
   addedToCartSuccess,
   addedToCartError,
   removedFromCartSuccess,
@@ -23,7 +26,8 @@ enum UserDataStatus {
 class UserState extends Equatable {
   final UserData user;
   final UserDataStatus userDataStatus;
-  final UserProductStatus? userProductStatus;
+  final FavoriteStatus? favoriteStatus;
+  final CartStatus? cartStatus;
   final int totalCartProducts;
   final double totalPrice;
   final String? message;
@@ -46,7 +50,8 @@ class UserState extends Equatable {
       memberSince: emptyString,
     ),
     this.userDataStatus = UserDataStatus.loading,
-    this.userProductStatus,
+    this.favoriteStatus,
+    this.cartStatus,
     this.totalCartProducts = 0,
     this.totalPrice = 0.0,
     this.message,
@@ -57,7 +62,8 @@ class UserState extends Equatable {
   List<Object?> get props => [
         user,
         userDataStatus,
-        userProductStatus,
+        favoriteStatus,
+        cartStatus,
         totalCartProducts,
         totalPrice,
         notifyCartChange,
@@ -66,7 +72,8 @@ class UserState extends Equatable {
   UserState copyWith({
     UserData? user,
     UserDataStatus? userDataStatus,
-    UserProductStatus? userProductStatus,
+    FavoriteStatus? favoriteStatus,
+    CartStatus? cartStatus,
     String? message,
     double? totalPrice,
     int? totalCartProducts,
@@ -75,7 +82,8 @@ class UserState extends Equatable {
     return UserState(
       user: user ?? this.user,
       userDataStatus: userDataStatus ?? this.userDataStatus,
-      userProductStatus: userProductStatus ?? this.userProductStatus,
+      favoriteStatus: favoriteStatus ?? this.favoriteStatus,
+      cartStatus: cartStatus ?? this.cartStatus,
       totalCartProducts: totalCartProducts ?? this.totalCartProducts,
       totalPrice: totalPrice ?? this.totalPrice,
       message: message ?? this.message,

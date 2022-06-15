@@ -85,6 +85,7 @@ class UserInfoCubit extends Cubit<UserInfoState> {
     emit(
       state.copyWith(
         screenStatus: ScreenStatus.loading,
+        formStatus: FormzStatus.pure,
       ),
     );
 
