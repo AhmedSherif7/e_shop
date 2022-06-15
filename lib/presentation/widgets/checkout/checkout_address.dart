@@ -34,6 +34,7 @@ class CheckoutAddress extends StatelessWidget {
                 Navigator.pushNamed(
                   context,
                   Routes.userInfo,
+                  arguments: context.read<UserBloc>(),
                 );
               },
               child: const Text('CHANGE'),

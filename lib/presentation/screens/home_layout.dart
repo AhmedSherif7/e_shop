@@ -32,8 +32,9 @@ class HomeLayout extends StatelessWidget {
       child: BlocListener<UserBloc, UserState>(
         listenWhen: (previous, current) {
           return previous.userProductStatus != current.userProductStatus ||
-              previous.user.cartProducts.length !=
-                  current.user.cartProducts.length ||
+              (previous.user.cartProducts.length !=
+                      current.user.cartProducts.length &&
+                  current.notifyCartChange) ||
               previous.user.favorites.length != current.user.favorites.length;
         },
         listener: (context, state) {

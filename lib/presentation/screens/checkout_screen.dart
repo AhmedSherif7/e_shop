@@ -65,8 +65,7 @@ class CheckoutScreen extends StatelessWidget {
                 );
               }
               if (state.orderSubmitStatus == OrderSubmitStatus.success) {
-                context.read<UserBloc>().add(UserDataFetched());
-
+                context.read<UserBloc>().add(UserOrderCreated());
                 showToast(
                   message: 'Order submitted',
                   state: ToastStates.success,

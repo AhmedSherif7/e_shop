@@ -44,6 +44,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UserCartProductCountChanged>(_changeCartProductCount);
     on<UserDataChanged>(_changeUserData);
     on<UserLoggedOut>(_logout);
+    on<UserOrderCreated>(_emptyCart);
   }
 
   void _getUserData(UserDataFetched event, Emitter<UserState> emit) async {
@@ -205,6 +206,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             state.copyWith(
               userProductStatus: UserProductStatus.removedFromCartSuccess,
               message: 'Removed from cart',
+              notifyCartChange: true,
               user: newUserData,
               totalCartProducts: _getTotalCartProducts(newUserData),
               totalPrice: _getTotalCartPrice(newUserData),
@@ -238,6 +240,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             state.copyWith(
               userProductStatus: UserProductStatus.addedToCartSuccess,
               message: 'Added to cart',
+              notifyCartChange: true,
               user: newUserData,
               totalCartProducts: _getTotalCartProducts(newUserData),
               totalPrice: _getTotalCartPrice(newUserData),
@@ -275,11 +278,23 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           state.copyWith(
             user: newUserData,
             userProductStatus: UserProductStatus.addedToCartSuccess,
+            notifyCartChange: false,
             totalCartProducts: _getTotalCartProducts(newUserData),
             totalPrice: _getTotalCartPrice(newUserData),
           ),
         );
       },
+    );
+  }
+
+  void _emptyCart(UserOrderCreated event, Emitter<UserState> emit) {
+    emit(
+      state.copyWith(
+        user: state.user.copyWith(
+          cartProducts: [],
+        ),
+        notifyCartChange: false,
+      ),
     );
   }
 

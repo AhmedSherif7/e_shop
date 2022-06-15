@@ -51,4 +51,6 @@ class UserDataChanged extends UserEvent {
   });
 }
 
+class UserOrderCreated extends UserEvent {}
+
 class UserLoggedOut extends UserEvent {}

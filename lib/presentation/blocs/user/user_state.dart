@@ -27,6 +27,7 @@ class UserState extends Equatable {
   final int totalCartProducts;
   final double totalPrice;
   final String? message;
+  final bool notifyCartChange;
 
   const UserState({
     this.user = const UserData(
@@ -49,6 +50,7 @@ class UserState extends Equatable {
     this.totalCartProducts = 0,
     this.totalPrice = 0.0,
     this.message,
+    this.notifyCartChange = true,
   });
 
   @override
@@ -58,6 +60,7 @@ class UserState extends Equatable {
         userProductStatus,
         totalCartProducts,
         totalPrice,
+        notifyCartChange,
       ];
 
   UserState copyWith({
@@ -67,6 +70,7 @@ class UserState extends Equatable {
     String? message,
     double? totalPrice,
     int? totalCartProducts,
+    bool? notifyCartChange,
   }) {
     return UserState(
       user: user ?? this.user,
@@ -75,6 +79,7 @@ class UserState extends Equatable {
       totalCartProducts: totalCartProducts ?? this.totalCartProducts,
       totalPrice: totalPrice ?? this.totalPrice,
       message: message ?? this.message,
+      notifyCartChange: notifyCartChange ?? this.notifyCartChange,
     );
   }
 }

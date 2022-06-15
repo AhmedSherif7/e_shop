@@ -159,6 +159,7 @@ class UserInfoCubit extends Cubit<UserInfoState> {
             emit(
               state.copyWith(
                 imageUrl: imageUrl,
+                formStatus: FormzStatus.pure,
                 screenStatus: ScreenStatus.infoUpdated,
                 updateStatus: UpdateStatus.success,
               ),
