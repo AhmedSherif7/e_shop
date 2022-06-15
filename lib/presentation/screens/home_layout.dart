@@ -30,31 +30,27 @@ class HomeLayout extends StatelessWidget {
         ),
       ],
       child: BlocListener<UserBloc, UserState>(
-        listenWhen: (previous, current) =>
-            previous.userProductStatus != current.userProductStatus,
+        listenWhen: (previous, current) {
+          return previous.userProductStatus != current.userProductStatus ||
+              previous.user.cartProducts.length !=
+                  current.user.cartProducts.length ||
+              previous.user.favorites.length != current.user.favorites.length;
+        },
         listener: (context, state) {
           switch (state.userProductStatus) {
             case UserProductStatus.addedToFavoritesSuccess:
-            case UserProductStatus.removedFromFavoritesSuccess:
             case UserProductStatus.addedToCartSuccess:
+            case UserProductStatus.removedFromFavoritesSuccess:
             case UserProductStatus.removedFromCartSuccess:
-              context.read<UserBloc>().add(UserDataFetched());
+            case UserProductStatus.addedToFavoritesError:
+            case UserProductStatus.removedFromFavoritesError:
+            case UserProductStatus.addedToCartError:
+            case UserProductStatus.removedFromCartError:
               showToast(
                 message: state.message!,
                 state: ToastStates.success,
               );
               break;
-            case UserProductStatus.addedToFavoritesError:
-            case UserProductStatus.removedFromFavoritesError:
-            case UserProductStatus.addedToCartError:
-            case UserProductStatus.removedFromCartError:
-            case UserProductStatus.changeCartProductCountError:
-              showToast(
-                message: state.message!,
-                state: ToastStates.error,
-              );
-              break;
-            case UserProductStatus.changeCartProductCountSuccess:
             case null:
               break;
           }

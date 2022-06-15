@@ -50,6 +50,7 @@ dependencies:
   image_gallery_saver: ^1.7.1
   permission_handler: ^9.2.0
   flutter_switch: ^0.3.2
+  cached_network_image: ^3.2.1
 
 dev_dependencies:
   flutter_test:

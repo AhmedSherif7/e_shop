@@ -9,8 +9,6 @@ enum UserProductStatus {
   addedToCartError,
   removedFromCartSuccess,
   removedFromCartError,
-  changeCartProductCountSuccess,
-  changeCartProductCountError,
 }
 
 enum UserDataStatus {

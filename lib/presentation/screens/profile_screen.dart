@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -34,7 +35,7 @@ class ProfileScreen extends StatelessWidget {
       },
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 8.0),
           child: Column(
             children: [
               BlocBuilder<ThemeCubit, ThemeState>(
@@ -49,7 +50,7 @@ class ProfileScreen extends StatelessWidget {
                         return CircleAvatar(
                           radius: 65.0,
                           backgroundColor: Colors.transparent,
-                          backgroundImage: NetworkImage(
+                          backgroundImage: CachedNetworkImageProvider(
                             context.select<UserBloc, String>(
                               (value) => value.state.user.imageUrl,
                             ),

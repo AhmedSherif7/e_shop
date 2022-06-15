@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ionicons/ionicons.dart';
@@ -111,8 +112,8 @@ class CarouselItem extends StatelessWidget {
             ),
             Align(
               alignment: const Alignment(-0.5, -0.8),
-              child: Image(
-                image: NetworkImage(product.images[0]),
+              child: CachedNetworkImage(
+                imageUrl: product.images[0],
                 height: 135.0,
                 width: 135.0,
               ),

@@ -27,28 +27,14 @@ abstract class RemoteDataSource {
 
   Future<List<ProductModel>> getPopularProducts();
 
-  Future<void> addProductToFavorites(
+  Future<void> updateFavorites(
     String userId,
     List<ProductModel> favorites,
-    ProductModel product,
   );
 
-  Future<void> removeProductFromFavorites(
-    String userId,
-    List<ProductModel> favorites,
-    String productId,
-  );
-
-  Future<void> addProductToCart(
+  Future<void> updateCartProducts(
     String userId,
     List<Map<String, dynamic>> cartProducts,
-    ProductModel product,
-  );
-
-  Future<void> removeProductFromCart(
-    String userId,
-    List<Map<String, dynamic>> cartProducts,
-    String productId,
   );
 
   Future<List<CategoryModel>> getCategories();
@@ -56,15 +42,13 @@ abstract class RemoteDataSource {
   Future<void> changeCartProductCount(
     String userId,
     List<Map<String, dynamic>> cartProducts,
-    String productId,
-    bool isAdd,
   );
 
   Future<Position> getUserLocation();
 
   Future<Placemark> getUserAddress(double longitude, double latitude);
 
-  Future<void> updateUserData(String userId, Map<String, String> newData);
+  Future<String?> updateUserData(String userId, Map<String, String> newData);
 
   Future<Map<String, dynamic>> checkVoucher(String code);
 
@@ -148,7 +132,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     final List<ProductModel> products = [];
 
     final productsResponse =
-        await FirebaseFirestore.instance.collection('products').limit(5).get();
+        await FirebaseFirestore.instance.collection('products').limit(6).get();
 
     for (var data in productsResponse.docs) {
       products.add(ProductModel.fromJson(data.data()));
@@ -158,13 +142,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<void> addProductToFavorites(
+  Future<void> updateFavorites(
     String userId,
     List<ProductModel> favorites,
-    ProductModel product,
   ) async {
-    favorites.add(product);
-
     final newFavorites = favorites.map((product) => product.toJson()).toList();
 
     await FirebaseFirestore.instance.collection('users').doc(userId).update({
@@ -173,31 +154,10 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<void> removeProductFromFavorites(
-    String userId,
-    List<ProductModel> favorites,
-    String productId,
-  ) async {
-    favorites.removeWhere((product) => product.id == productId);
-
-    final newFavorites = favorites.map((product) => product.toJson()).toList();
-
-    await FirebaseFirestore.instance.collection('users').doc(userId).update({
-      'favorites': newFavorites,
-    });
-  }
-
-  @override
-  Future<void> addProductToCart(
+  Future<void> updateCartProducts(
     String userId,
     List<Map<String, dynamic>> cartProducts,
-    ProductModel product,
   ) async {
-    cartProducts.add({
-      'product': product,
-      'count': 1,
-    });
-
     final newCartProducts = cartProducts.map((productMap) {
       final product = (productMap['product'] as ProductModel).toJson();
       final count = productMap['count'];
@@ -210,30 +170,6 @@ class RemoteDataSourceImpl implements RemoteDataSource {
     await FirebaseFirestore.instance.collection('users').doc(userId).update({
       'cartProducts': newCartProducts,
     });
-  }
-
-  @override
-  Future<void> removeProductFromCart(String userId,
-      List<Map<String, dynamic>> cartProducts, String productId) async {
-    try {
-      cartProducts
-          .removeWhere((productMap) => productMap['product'].id == productId);
-
-      final newCartProducts = cartProducts.map((productMap) {
-        final product = (productMap['product'] as ProductModel).toJson();
-        final count = productMap['count'];
-        return {
-          'product': product,
-          'count': count,
-        };
-      }).toList();
-
-      await FirebaseFirestore.instance.collection('users').doc(userId).update({
-        'cartProducts': newCartProducts,
-      });
-    } catch (e) {
-      throw const Failure(message: 'Failed to remove from cart');
-    }
   }
 
   @override
@@ -252,34 +188,19 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   Future<void> changeCartProductCount(
     String userId,
     List<Map<String, dynamic>> cartProducts,
-    String productId,
-    bool isAdd,
   ) async {
-    try {
-      final productIndex = cartProducts
-          .indexWhere((productMap) => productMap['product'].id == productId);
+    final newCartProducts = cartProducts.map((productMap) {
+      final product = (productMap['product'] as ProductModel).toJson();
+      final count = productMap['count'];
+      return {
+        'product': product,
+        'count': count,
+      };
+    }).toList();
 
-      if (isAdd) {
-        cartProducts[productIndex]['count'] += 1;
-      } else {
-        cartProducts[productIndex]['count'] -= 1;
-      }
-
-      final newCartProducts = cartProducts.map((productMap) {
-        final product = (productMap['product'] as ProductModel).toJson();
-        final count = productMap['count'];
-        return {
-          'product': product,
-          'count': count,
-        };
-      }).toList();
-
-      await FirebaseFirestore.instance.collection('users').doc(userId).update({
-        'cartProducts': newCartProducts,
-      });
-    } catch (e) {
-      throw const Failure(message: 'Failed to change count');
-    }
+    await FirebaseFirestore.instance.collection('users').doc(userId).update({
+      'cartProducts': newCartProducts,
+    });
   }
 
   @override
@@ -348,7 +269,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   }
 
   @override
-  Future<void> updateUserData(
+  Future<String?> updateUserData(
     String userId,
     Map<String, String> newData,
   ) async {
@@ -364,12 +285,21 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       final newImageUrl = await mountainsRef.getDownloadURL();
 
       newData.update('imageUrl', (value) => newImageUrl);
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update(newData);
+
+      return newImageUrl;
     }
 
     await FirebaseFirestore.instance
         .collection('users')
         .doc(userId)
         .update(newData);
+
+    return null;
   }
 
   @override

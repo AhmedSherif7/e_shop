@@ -1,11 +1,11 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
-import 'package:e_commerce/presentation/blocs/theme/theme_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ionicons/ionicons.dart';
 
 import '../../app/di.dart';
 import '../blocs/search/search_cubit.dart';
+import '../blocs/theme/theme_cubit.dart';
 import '../blocs/user/user_bloc.dart';
 import '../resources/colors_manager.dart';
 import '../resources/font_manager.dart';

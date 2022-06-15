@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -56,15 +57,27 @@ class ProductsGridItem extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Hero(
                           tag: product.id,
-                          child: FadeInImage.assetNetwork(
-                            image: product.images[0],
+                          child: CachedNetworkImage(
+                            imageUrl: product.images[0],
                             width: 200.0,
                             height: 220.0,
-                            placeholder: AssetImageManager.productPlaceHolder,
-                            imageErrorBuilder: (context, object, stack) {
+                            placeholder: (context, url) {
+                              return Image.asset(
+                                AssetImageManager.productPlaceHolder,
+                              );
+                            },
+                            errorWidget: (context, url, error) {
                               return const ImageLoadError();
                             },
                           ),
+                          // FadeInImage.assetNetwork(
+                          //   image: ,
+                          //
+                          //   placeholder: AssetImageManager.productPlaceHolder,
+                          //   imageErrorBuilder: (context, object, stack) {
+                          //     return const ImageLoadError();
+                          //   },
+                          // ),
                         ),
                       ),
                     ),

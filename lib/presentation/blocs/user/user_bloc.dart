@@ -39,9 +39,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     this.logoutUseCase,
   ) : super(const UserState(userDataStatus: UserDataStatus.loading)) {
     on<UserDataFetched>(_getUserData);
-    on<UserProductFavoriteToggled>(_favoriteProductToggle);
-    on<UserProductCartToggled>(_cartProductToggle);
-    on<UserCartProductCountChanged>(_changeProductCount);
+    on<UserProductFavoriteToggled>(_changeFavorites);
+    on<UserProductCartToggled>(_changeCartProduct);
+    on<UserCartProductCountChanged>(_changeCartProductCount);
+    on<UserDataChanged>(_changeUserData);
     on<UserLoggedOut>(_logout);
   }
 
@@ -60,29 +61,57 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         );
       },
       (userData) {
-        int totalCount = 0;
-        double totalPrice = 0.0;
-        for (var productMap in userData.cartProducts) {
-          totalCount += productMap['count'] as int;
-          totalPrice += double.parse(((productMap['count'] as int) *
-                  (productMap['product'].price as double))
-              .toStringAsFixed(2));
-        }
         emit(
           state.copyWith(
             userDataStatus: UserDataStatus.success,
             user: userData,
-            totalCartProducts: totalCount,
-            totalPrice: totalPrice,
+            totalCartProducts: _getTotalCartProducts(userData),
+            totalPrice: _getTotalCartPrice(userData),
           ),
         );
       },
     );
   }
 
-  void _favoriteProductToggle(
+  int _getTotalCartProducts(UserData user) {
+    int count = 0;
+    for (var productMap in user.cartProducts) {
+      count += productMap['count'] as int;
+    }
+    return count;
+  }
+
+  double _getTotalCartPrice(UserData user) {
+    double count = 0.0;
+    for (var productMap in user.cartProducts) {
+      count += double.parse(((productMap['count'] as int) *
+              (productMap['product'].price as double))
+          .toStringAsFixed(2));
+    }
+    return count;
+  }
+
+  void _changeUserData(UserDataChanged event, Emitter<UserState> emit) {
+    emit(
+      state.copyWith(
+        user: state.user.copyWith(
+          imageUrl: event.imageUrl,
+          firstName: event.firstName,
+          lastName: event.lastName,
+          email: event.email,
+          phone: event.phone,
+          governorate: event.governorate,
+          city: event.city,
+          street: event.street,
+          postalCode: event.postalCode,
+        ),
+      ),
+    );
+  }
+
+  void _changeFavorites(
       UserProductFavoriteToggled event, Emitter<UserState> emit) async {
-    late Either<Failure, NoOutput> result;
+    late Either<Failure, List<Product>> result;
 
     if (event.favorites.any((product) => product.id == event.product.id)) {
       result = await _removeProductFromFavoritesUseCase(
@@ -101,11 +130,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             ),
           );
         },
-        (output) {
+        (favorites) {
           emit(
             state.copyWith(
               userProductStatus: UserProductStatus.removedFromFavoritesSuccess,
               message: 'Removed from favorites',
+              user: state.user.copyWith(
+                favorites: favorites,
+              ),
             ),
           );
         },
@@ -127,11 +159,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             ),
           );
         },
-        (output) {
+        (favorites) {
           emit(
             state.copyWith(
               userProductStatus: UserProductStatus.addedToFavoritesSuccess,
               message: 'Added to favorites',
+              user: state.user.copyWith(
+                favorites: favorites,
+              ),
             ),
           );
         },
@@ -139,9 +174,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
   }
 
-  void _cartProductToggle(
+  void _changeCartProduct(
       UserProductCartToggled event, Emitter<UserState> emit) async {
-    late Either<Failure, NoOutput> result;
+    late Either<Failure, List<Map<String, dynamic>>> result;
 
     if (event.cartProducts
         .any((productMap) => productMap['product'].id == event.product.id)) {
@@ -161,11 +196,18 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             ),
           );
         },
-        (output) {
+        (cartProducts) {
+          final newUserData = state.user.copyWith(
+            cartProducts: cartProducts,
+          );
+
           emit(
             state.copyWith(
               userProductStatus: UserProductStatus.removedFromCartSuccess,
               message: 'Removed from cart',
+              user: newUserData,
+              totalCartProducts: _getTotalCartProducts(newUserData),
+              totalPrice: _getTotalCartPrice(newUserData),
             ),
           );
         },
@@ -187,11 +229,18 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             ),
           );
         },
-        (output) {
+        (cartProducts) {
+          final newUserData = state.user.copyWith(
+            cartProducts: cartProducts,
+          );
+
           emit(
             state.copyWith(
               userProductStatus: UserProductStatus.addedToCartSuccess,
               message: 'Added to cart',
+              user: newUserData,
+              totalCartProducts: _getTotalCartProducts(newUserData),
+              totalPrice: _getTotalCartPrice(newUserData),
             ),
           );
         },
@@ -199,7 +248,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
   }
 
-  void _changeProductCount(
+  void _changeCartProductCount(
       UserCartProductCountChanged event, Emitter<UserState> emit) async {
     final result = await _changeCartProductCountUseCase(
       ChangeCartProductCountUseCaseInput(
@@ -213,18 +262,23 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       (failure) {
         emit(
           state.copyWith(
-            userProductStatus: UserProductStatus.changeCartProductCountError,
-            message: failure.message,
+            userProductStatus: UserProductStatus.addedToCartSuccess,
           ),
         );
       },
-      (result) {
+      (cartProducts) {
+        final newUserData = state.user.copyWith(
+          cartProducts: cartProducts,
+        );
+
         emit(
           state.copyWith(
-            userProductStatus: UserProductStatus.changeCartProductCountSuccess,
+            user: newUserData,
+            userProductStatus: UserProductStatus.addedToCartSuccess,
+            totalCartProducts: _getTotalCartProducts(newUserData),
+            totalPrice: _getTotalCartPrice(newUserData),
           ),
         );
-        add(UserDataFetched());
       },
     );
   }

@@ -5,14 +5,14 @@ import '../entities/product.dart';
 import '../repositories/user_repository.dart';
 import 'base_use_case.dart';
 
-class AddProductToCartUseCase
-    extends BaseUseCase<AddProductToCartUseCaseInput, NoOutput> {
+class AddProductToCartUseCase extends BaseUseCase<AddProductToCartUseCaseInput,
+    List<Map<String, dynamic>>> {
   final UserRepository repository;
 
   AddProductToCartUseCase(this.repository);
 
   @override
-  Future<Either<Failure, NoOutput>> call(
+  Future<Either<Failure, List<Map<String, dynamic>>>> call(
       AddProductToCartUseCaseInput input) async {
     return await repository.addProductToCart(
       input.cartProducts,

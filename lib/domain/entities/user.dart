@@ -49,4 +49,36 @@ class UserData extends Equatable {
         cartProducts,
         memberSince,
       ];
+
+  UserData copyWith({
+    String? id,
+    String? email,
+    String? firstName,
+    String? lastName,
+    String? phone,
+    String? governorate,
+    String? city,
+    String? street,
+    String? postalCode,
+    String? imageUrl,
+    List<Product>? favorites,
+    List<Map<String, dynamic>>? cartProducts,
+    String? memberSince,
+  }) {
+    return UserData(
+      id: id ?? this.id,
+      email: email ?? this.email,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      phone: phone ?? this.phone,
+      governorate: governorate ?? this.governorate,
+      city: city ?? this.city,
+      street: street ?? this.street,
+      postalCode: postalCode ?? this.postalCode,
+      imageUrl: imageUrl ?? this.imageUrl,
+      favorites: favorites ?? this.favorites,
+      cartProducts: cartProducts ?? this.cartProducts,
+      memberSince: memberSince ?? this.memberSince,
+    );
+  }
 }

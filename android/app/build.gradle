@@ -30,6 +30,13 @@ apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 31
 
+    lintOptions {
+        disable 'InvalidPackage'
+        disable "Instantiatable"
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

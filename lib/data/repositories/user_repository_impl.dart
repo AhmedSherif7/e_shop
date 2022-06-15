@@ -36,36 +36,46 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, NoOutput>> addProductToFavorites(
+  Future<Either<Failure, List<Product>>> addProductToFavorites(
       List<Product> favorites, Product product) async {
     try {
       final userId = localDataSource.getCachedUserId();
+
+      final newFavorites = List<Product>.from(favorites);
+      newFavorites.add(product);
+
       final favoritesModel =
-          favorites.map((product) => product as ProductModel).toList();
-      await remoteDataSource.addProductToFavorites(
+          newFavorites.map((product) => product as ProductModel).toList();
+
+      await remoteDataSource.updateFavorites(
         userId,
         favoritesModel,
-        product as ProductModel,
       );
-      return Right(NoOutput());
+
+      return Right(newFavorites);
     } catch (_) {
       return const Left(Failure(message: 'Failed to add product to favorites'));
     }
   }
 
   @override
-  Future<Either<Failure, NoOutput>> removeProductFromFavorites(
+  Future<Either<Failure, List<Product>>> removeProductFromFavorites(
       List<Product> favorites, String productId) async {
     try {
       final userId = localDataSource.getCachedUserId();
+
+      final newFavorites = List<Product>.from(favorites);
+      newFavorites.removeWhere((product) => product.id == productId);
+
       final favoritesModel =
-          favorites.map((product) => product as ProductModel).toList();
-      await remoteDataSource.removeProductFromFavorites(
+          newFavorites.map((product) => product as ProductModel).toList();
+
+      await remoteDataSource.updateFavorites(
         userId,
         favoritesModel,
-        productId,
       );
-      return Right(NoOutput());
+
+      return Right(newFavorites);
     } catch (_) {
       return const Left(
         Failure(message: 'Failed to remove product from favorites'),
@@ -74,12 +84,18 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, NoOutput>> addProductToCart(
+  Future<Either<Failure, List<Map<String, dynamic>>>> addProductToCart(
       List<Map<String, dynamic>> cartProducts, Product product) async {
     try {
       final userId = localDataSource.getCachedUserId();
 
-      final cartProductsModel = cartProducts.map((productMap) {
+      final newCartProducts = List<Map<String, dynamic>>.from(cartProducts);
+      newCartProducts.add({
+        'product': product,
+        'count': 1,
+      });
+
+      final cartProductsModel = newCartProducts.map((productMap) {
         final product = productMap['product'] as ProductModel;
         final count = productMap['count'];
         return {
@@ -88,12 +104,12 @@ class UserRepositoryImpl implements UserRepository {
         };
       }).toList();
 
-      await remoteDataSource.addProductToCart(
+      await remoteDataSource.updateCartProducts(
         userId,
         cartProductsModel,
-        product as ProductModel,
       );
-      return Right(NoOutput());
+
+      return Right(newCartProducts);
     } catch (_) {
       return const Left(
         Failure(message: 'Failed to add product to cart'),
@@ -102,11 +118,16 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, NoOutput>> removeProductFromCart(
+  Future<Either<Failure, List<Map<String, dynamic>>>> removeProductFromCart(
       List<Map<String, dynamic>> cartProducts, String productId) async {
     try {
       final userId = localDataSource.getCachedUserId();
-      final cartProductsModel = cartProducts.map((productMap) {
+
+      final newCartProducts = List<Map<String, dynamic>>.from(cartProducts);
+      newCartProducts
+          .removeWhere((productMap) => productMap['product'].id == productId);
+
+      final cartProductsModel = newCartProducts.map((productMap) {
         final product = productMap['product'] as ProductModel;
         final count = productMap['count'];
         return {
@@ -115,12 +136,12 @@ class UserRepositoryImpl implements UserRepository {
         };
       }).toList();
 
-      await remoteDataSource.removeProductFromCart(
+      await remoteDataSource.updateCartProducts(
         userId,
         cartProductsModel,
-        productId,
       );
-      return Right(NoOutput());
+
+      return Right(newCartProducts);
     } catch (_) {
       return const Left(
         Failure(message: 'Failed to remove product from cart'),
@@ -129,20 +150,29 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, NoOutput>> changeCartProductCount(
+  Future<Either<Failure, List<Map<String, dynamic>>>> changeCartProductCount(
     List<Map<String, dynamic>> cartProducts,
     String productId,
     bool isAdd,
   ) async {
     try {
       final userId = localDataSource.getCachedUserId();
+
+      final productIndex = cartProducts
+          .indexWhere((productMap) => productMap['product'].id == productId);
+
+      if (isAdd) {
+        cartProducts[productIndex]['count'] += 1;
+      } else {
+        cartProducts[productIndex]['count'] -= 1;
+      }
+
       await remoteDataSource.changeCartProductCount(
         userId,
         cartProducts,
-        productId,
-        isAdd,
       );
-      return Right(NoOutput());
+
+      return Right(cartProducts);
     } catch (_) {
       return const Left(
         Failure(message: 'Failed to change product count in cart'),
@@ -189,13 +219,13 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, NoOutput>> updateUserData(
+  Future<Either<Failure, String>> updateUserData(
     Map<String, String> newData,
   ) async {
     try {
       final userId = localDataSource.getCachedUserId();
-      await remoteDataSource.updateUserData(userId, newData);
-      return Right(NoOutput());
+      final imageUrl = await remoteDataSource.updateUserData(userId, newData);
+      return Right(imageUrl ?? '');
     } catch (_) {
       return const Left(Failure(message: 'Failed to update info'));
     }

@@ -134,7 +134,7 @@ class UserInfoCubit extends Cubit<UserInfoState> {
         });
       }
 
-      late Either<Failure, NoOutput> result;
+      late Either<Failure, String> result;
       if (state.imageStatus == ImageStatus.success) {
         updateData.addAll({
           'imageUrl': state.newImagePath!,
@@ -154,13 +154,24 @@ class UserInfoCubit extends Cubit<UserInfoState> {
             ),
           );
         },
-        (success) {
-          emit(
-            state.copyWith(
-              screenStatus: ScreenStatus.infoUpdated,
-              updateStatus: UpdateStatus.success,
-            ),
-          );
+        (imageUrl) {
+          if (imageUrl.isNotEmpty) {
+            emit(
+              state.copyWith(
+                imageUrl: imageUrl,
+                screenStatus: ScreenStatus.infoUpdated,
+                updateStatus: UpdateStatus.success,
+              ),
+            );
+          } else {
+            emit(
+              state.copyWith(
+                formStatus: FormzStatus.pure,
+                screenStatus: ScreenStatus.infoUpdated,
+                updateStatus: UpdateStatus.success,
+              ),
+            );
+          }
         },
       );
     }

@@ -143,9 +143,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             }
 
                             if (state.status.isSubmissionSuccess) {
-                              Navigator.pushReplacementNamed(
+                              Navigator.pushNamedAndRemoveUntil(
                                 context,
                                 Routes.home,
+                                (route) => false,
                               );
                             }
                           },

@@ -111,7 +111,20 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
           }
 
           if (state.updateStatus == UpdateStatus.success) {
-            context.read<UserBloc>().add(UserDataFetched());
+            context.read<UserBloc>().add(
+                  UserDataChanged(
+                    imageUrl: state.imageUrl ??
+                        context.read<UserBloc>().state.user.imageUrl,
+                    firstName: firstNameController.text,
+                    lastName: lastNameController.text,
+                    email: emailController.text,
+                    phone: phoneController.text,
+                    governorate: governorateController.text,
+                    city: cityController.text,
+                    street: streetController.text,
+                    postalCode: postalCodeController.text,
+                  ),
+                );
 
             showToast(
               message: 'Updated information successfully',
@@ -185,57 +198,52 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                       ? ColorManager.white
                                       : ColorManager.black,
                                   child: BlocSelector<UserInfoCubit,
-                                      UserInfoState, String?>(
+                                      UserInfoState, ImageStatus>(
                                     selector: (state) {
-                                      return state.newImagePath;
+                                      return state.imageStatus;
                                     },
-                                    builder: (context, imagePath) {
-                                      return BlocSelector<UserInfoCubit,
-                                          UserInfoState, ImageStatus>(
-                                        selector: (state) {
-                                          return state.imageStatus;
-                                        },
-                                        builder: (context, imageStatus) {
-                                          if (state.screenStatus ==
-                                                  ScreenStatus.viewing ||
-                                              imageStatus ==
-                                                  ImageStatus.initial) {
-                                            return UserAvatarImage(
-                                              NetworkImage(
-                                                context
-                                                    .read<UserBloc>()
-                                                    .state
-                                                    .user
-                                                    .imageUrl,
-                                              ),
-                                            );
-                                          } else {
-                                            if (imageStatus ==
-                                                ImageStatus.error) {
-                                              showToast(
-                                                message: state.errorMessage!,
-                                                state: ToastStates.error,
-                                              );
+                                    builder: (context, imageStatus) {
+                                      if (state.screenStatus ==
+                                              ScreenStatus.viewing ||
+                                          imageStatus == ImageStatus.initial) {
+                                        return UserAvatarImage(
+                                          NetworkImage(
+                                            context
+                                                .read<UserBloc>()
+                                                .state
+                                                .user
+                                                .imageUrl,
+                                          ),
+                                        );
+                                      } else {
+                                        if (imageStatus == ImageStatus.error) {
+                                          showToast(
+                                            message: state.errorMessage!,
+                                            state: ToastStates.error,
+                                          );
 
-                                              return UserAvatarImage(
-                                                NetworkImage(
-                                                  context
-                                                      .read<UserBloc>()
-                                                      .state
-                                                      .user
-                                                      .imageUrl,
-                                                ),
-                                              );
-                                            } else {
-                                              return UserAvatarImage(
-                                                FileImage(
-                                                  File(imagePath!),
-                                                ),
-                                              );
-                                            }
-                                          }
-                                        },
-                                      );
+                                          return UserAvatarImage(
+                                            NetworkImage(
+                                              context
+                                                  .read<UserBloc>()
+                                                  .state
+                                                  .user
+                                                  .imageUrl,
+                                            ),
+                                          );
+                                        } else {
+                                          return UserAvatarImage(
+                                            FileImage(
+                                              File(
+                                                context
+                                                    .read<UserInfoCubit>()
+                                                    .state
+                                                    .newImagePath!,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      }
                                     },
                                   ),
                                 );
@@ -257,7 +265,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                                     icon: const Icon(
                                       Ionicons.camera_sharp,
                                       size: 28.0,
-                                      color: ColorManager.black,
+                                      color: ColorManager.white,
                                     ),
                                   ),
                                 ),

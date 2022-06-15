@@ -12,27 +12,27 @@ import '../use_cases/base_use_case.dart';
 abstract class UserRepository {
   Future<Either<Failure, UserData>> getUserData();
 
-  Future<Either<Failure, NoOutput>> addProductToFavorites(
+  Future<Either<Failure, List<Product>>> addProductToFavorites(
     List<Product> favorites,
     Product product,
   );
 
-  Future<Either<Failure, NoOutput>> removeProductFromFavorites(
+  Future<Either<Failure,  List<Product>>> removeProductFromFavorites(
     List<Product> favorites,
     String productId,
   );
 
-  Future<Either<Failure, NoOutput>> addProductToCart(
+  Future<Either<Failure, List<Map<String, dynamic>>>> addProductToCart(
     List<Map<String, dynamic>> cartProducts,
     Product product,
   );
 
-  Future<Either<Failure, NoOutput>> removeProductFromCart(
+  Future<Either<Failure, List<Map<String, dynamic>>>> removeProductFromCart(
     List<Map<String, dynamic>> cartProducts,
     String productId,
   );
 
-  Future<Either<Failure, NoOutput>> changeCartProductCount(
+  Future<Either<Failure, List<Map<String, dynamic>>>> changeCartProductCount(
     List<Map<String, dynamic>> cartProducts,
     String productId,
     bool isAdd,
@@ -45,7 +45,7 @@ abstract class UserRepository {
 
   Future<Either<Failure, XFile>> getImageFromGallery();
 
-  Future<Either<Failure, NoOutput>> updateUserData(Map<String, String> newData);
+  Future<Either<Failure, String>> updateUserData(Map<String, String> newData);
 
   Future<Either<Failure, Map<String, dynamic>>> addVoucher(String code);
 

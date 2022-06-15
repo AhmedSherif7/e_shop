@@ -27,4 +27,28 @@ class UserCartProductCountChanged extends UserEvent {
   UserCartProductCountChanged(this.cartProducts, this.productId, this.isAdd);
 }
 
+class UserDataChanged extends UserEvent {
+  final String imageUrl;
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String phone;
+  final String governorate;
+  final String city;
+  final String street;
+  final String postalCode;
+
+  UserDataChanged({
+    required this.imageUrl,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.phone,
+    required this.governorate,
+    required this.city,
+    required this.street,
+    required this.postalCode,
+  });
+}
+
 class UserLoggedOut extends UserEvent {}

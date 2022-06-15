@@ -50,6 +50,7 @@ class UserInfoState extends Equatable {
   final FormzStatus formStatus;
   final String? errorMessage;
   final String? newImagePath;
+  final String? imageUrl;
 
   final Marker? marker;
   final LocationStatus locationStatus;
@@ -75,6 +76,7 @@ class UserInfoState extends Equatable {
     this.marker,
     this.locationStatus = LocationStatus.loading,
     this.placeMark,
+    this.imageUrl,
   });
 
   @override
@@ -93,6 +95,7 @@ class UserInfoState extends Equatable {
         postalCode,
         formStatus,
         newImagePath,
+        imageUrl,
         locationStatus,
         marker,
         placeMark,
@@ -112,6 +115,7 @@ class UserInfoState extends Equatable {
     PostalCodeInput? postalCode,
     String? errorMessage,
     String? newImagePath,
+    String? imageUrl,
     FormzStatus? formStatus,
     ScreenStatus? screenStatus,
     double? longitude,
@@ -136,6 +140,7 @@ class UserInfoState extends Equatable {
       formStatus: formStatus ?? this.formStatus,
       errorMessage: errorMessage ?? this.errorMessage,
       newImagePath: newImagePath ?? this.newImagePath,
+      imageUrl: imageUrl ?? this.imageUrl,
       marker: marker ?? this.marker,
       locationStatus: locationStatus ?? this.locationStatus,
       placeMark: placeMark ?? this.placeMark,

@@ -6,13 +6,13 @@ import '../repositories/user_repository.dart';
 import 'base_use_case.dart';
 
 class AddProductToFavoritesUseCase
-    extends BaseUseCase<AddProductToFavoritesUseCaseInput, NoOutput> {
+    extends BaseUseCase<AddProductToFavoritesUseCaseInput, List<Product>> {
   final UserRepository repository;
 
   AddProductToFavoritesUseCase(this.repository);
 
   @override
-  Future<Either<Failure, NoOutput>> call(
+  Future<Either<Failure, List<Product>>> call(
       AddProductToFavoritesUseCaseInput input) async {
     return await repository.addProductToFavorites(
       input.favorites,

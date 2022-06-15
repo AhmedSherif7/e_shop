@@ -6,13 +6,13 @@ import '../repositories/user_repository.dart';
 import 'base_use_case.dart';
 
 class RemoveProductFromFavoritesUseCase
-    extends BaseUseCase<RemoveProductFromFavoritesUseCaseInput, NoOutput> {
+    extends BaseUseCase<RemoveProductFromFavoritesUseCaseInput, List<Product>> {
   final UserRepository repository;
 
   RemoveProductFromFavoritesUseCase(this.repository);
 
   @override
-  Future<Either<Failure, NoOutput>> call(
+  Future<Either<Failure, List<Product>>> call(
       RemoveProductFromFavoritesUseCaseInput input) async {
     return await repository.removeProductFromFavorites(
       input.favorites,
