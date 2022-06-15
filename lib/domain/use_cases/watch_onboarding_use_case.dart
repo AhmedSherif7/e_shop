@@ -1,11 +1,11 @@
 import 'package:dartz/dartz.dart';
 
 import '../../data/error/failure.dart';
-import '../repositories/home_repository.dart';
+import '../repositories/main_repository.dart';
 import 'base_use_case.dart';
 
 class WatchOnBoardingUseCase extends BaseUseCase<NoParams, NoOutput> {
-  final HomeRepository repository;
+  final MainRepository repository;
 
   WatchOnBoardingUseCase(this.repository);
 

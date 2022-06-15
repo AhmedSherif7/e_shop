@@ -2,17 +2,17 @@ import 'package:dartz/dartz.dart';
 
 import '../../domain/entities/category.dart';
 import '../../domain/entities/product.dart';
-import '../../domain/repositories/home_repository.dart';
+import '../../domain/repositories/main_repository.dart';
 import '../../domain/use_cases/base_use_case.dart';
 import '../data_sources/local_data_source.dart';
 import '../data_sources/remote_data_source.dart';
 import '../error/failure.dart';
 
-class HomeRepositoryImpl implements HomeRepository {
+class MainRepositoryImpl implements MainRepository {
   final RemoteDataSource remoteDataSource;
   final LocalDataSource localDataSource;
 
-  HomeRepositoryImpl({
+  MainRepositoryImpl({
     required this.remoteDataSource,
     required this.localDataSource,
   });

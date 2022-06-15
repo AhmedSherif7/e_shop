@@ -1,12 +1,12 @@
 import 'package:dartz/dartz.dart';
 
 import '../../data/error/failure.dart';
-import '../repositories/home_repository.dart';
+import '../repositories/main_repository.dart';
 import 'base_use_case.dart';
 
 class DownLoadProductImageUseCase
     extends BaseUseCase<DownLoadProductImageUseCaseInput, NoOutput> {
-  final HomeRepository repository;
+  final MainRepository repository;
 
   DownLoadProductImageUseCase(this.repository);
 

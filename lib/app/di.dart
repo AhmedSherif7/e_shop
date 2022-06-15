@@ -8,11 +8,11 @@ import '../data/data_sources/payment_data_source.dart';
 import '../data/data_sources/remote_data_source.dart';
 import '../data/network/dio_factory.dart';
 import '../data/repositories/auth_repository_impl.dart';
-import '../data/repositories/home_repository_impl.dart';
+import '../data/repositories/main_repository_impl.dart';
 import '../data/repositories/payment_repository_impl.dart';
 import '../data/repositories/user_repository_impl.dart';
 import '../domain/repositories/auth_repository.dart';
-import '../domain/repositories/home_repository.dart';
+import '../domain/repositories/main_repository.dart';
 import '../domain/repositories/payment_repository.dart';
 import '../domain/repositories/user_repository.dart';
 import '../domain/use_cases/add_product_to_cart_use_case.dart';
@@ -91,9 +91,9 @@ Future<void> initAppModule() async {
     );
   }
 
-  if (!sl.isRegistered<HomeRepository>()) {
-    sl.registerLazySingleton<HomeRepository>(
-      () => HomeRepositoryImpl(
+  if (!sl.isRegistered<MainRepository>()) {
+    sl.registerLazySingleton<MainRepository>(
+      () => MainRepositoryImpl(
         remoteDataSource: sl(),
         localDataSource: sl(),
       ),

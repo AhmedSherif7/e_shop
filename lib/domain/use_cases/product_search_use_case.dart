@@ -2,11 +2,11 @@ import 'package:dartz/dartz.dart';
 
 import '../../data/error/failure.dart';
 import '../entities/product.dart';
-import '../repositories/home_repository.dart';
+import '../repositories/main_repository.dart';
 import 'base_use_case.dart';
 
 class ProductSearchUseCase extends BaseUseCase<String, List<Product>> {
-  final HomeRepository repository;
+  final MainRepository repository;
 
   ProductSearchUseCase(this.repository);
 

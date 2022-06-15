@@ -26,6 +26,7 @@ used packages:
 &emsp;- image gallery saver  
 &emsp;- permission handler  
 &emsp;- shared preferences  
+&emsp;- cached network image  
 &emsp;- carousel slider  
 &emsp;- smooth page indicator  
 &emsp;- fluttertoast  

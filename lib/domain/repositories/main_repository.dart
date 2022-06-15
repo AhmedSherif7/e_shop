@@ -5,7 +5,7 @@ import '../entities/category.dart';
 import '../entities/product.dart';
 import '../use_cases/base_use_case.dart';
 
-abstract class HomeRepository {
+abstract class MainRepository {
   Future<Either<Failure, List<Product>>> getPopularProducts();
 
   Future<Either<Failure, List<Category>>> getCategories();
